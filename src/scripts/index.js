@@ -1,12 +1,14 @@
+export { cardList, cardTemplate, openCard };
 import '../pages/index.css';
-import { initialCards, createCard } from './cards';
-import { showModal, closeModal, closeEscapeModal, closeAreaModal, saveInfo, handleEditForm, handleAddForm } from './modal';
-export { nameInput, jobInput, namePlace, jobPlace, cardInput, linkInput, cardList, cardTemplate };
+import { initialCards, createCard, getCard, deleteCard, likeCard } from './cards';
+import { showModal, closeModal, closeEscapeModal, closeAreaModal } from './modal';
 
+// DOM-элементы для создания карточки
 const cardTemplate = document.querySelector('#card-template').content;
 const cardList = document.querySelector('.places__list');
-                                   
-initialCards.forEach(createCard);                             //создание и вывод карточек на страницу
+
+// Перебор элементов массива для создания карточки и ее вывода на страницу
+initialCards.forEach(createCard);
 
 // Модальное окно редактирования профиля (DOM-элементы и вызовы)
 const editPopup = document.querySelector('.popup_type_edit');
@@ -49,6 +51,21 @@ closeEditButton.addEventListener('click', saveInfo);
 saveEditButton.addEventListener('click', closeModal(saveEditButton, editPopup));
 editForm.addEventListener('submit', handleEditForm);
 
+// Функция сохранения данных полей ввода формы
+function saveInfo() {
+  nameInput.value = namePlace.textContent;
+  jobInput.value = jobPlace.textContent;
+};
+
+// Функция редактирования данных профиля
+function handleEditForm(evt) {
+  evt.preventDefault(); 
+  const nameValue = nameInput.value;
+  const jobValue = jobInput.value;
+  namePlace.textContent = nameValue;
+  jobPlace.textContent = jobValue;
+};
+
 // Работа с модальным окном добавления карточек (DOM-элементы и вызовы)
 const addForm = document.querySelector('form[name="new-place"');
 const cardInput = addForm.querySelector('.popup__input_type_card-name');
@@ -57,3 +74,36 @@ const saveAddButton = addForm.querySelector('.popup__button');
 
 saveAddButton.addEventListener('click', closeModal(saveAddButton, addPopup));
 addForm.addEventListener('submit', handleAddForm);
+
+// Функция очистки данных полей ввода формы
+function clearInfo() {
+  cardInput.value = '';
+  linkInput.value = '';
+};
+
+// Функция редактирования данных карточек
+function handleAddForm(evt) {
+  evt.preventDefault();
+  const cardValue = cardInput.value;
+  const linkValue = linkInput.value;
+  const card = { name: cardValue, link: linkValue };
+  initialCards.unshift(card);
+  const newCard = getCard(card, deleteCard, likeCard, openCard);
+  cardList.prepend(newCard);
+  clearInfo();
+};
+
+// Функция открытия карточек с подписью
+function openCard(evt) {
+  const photoPopup = document.querySelector('.popup_type_image');
+  const card = photoPopup.querySelector('.popup__image');
+  const caption = photoPopup.querySelector('.popup__caption');
+  photoPopup.classList.add('popup_is-animated');
+  setTimeout(() => {
+    photoPopup.classList.add('popup_is-opened');
+  });
+  card.setAttribute('src', evt.target.src);
+  card.setAttribute('alt', evt.target.alt);
+  caption.textContent = evt.target.alt;
+  window.addEventListener('keydown', closeEscapeModal(photoPopup));
+};

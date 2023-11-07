@@ -1,6 +1,5 @@
-export {initialCards, getCard, createCard, deleteCard, likeCard, openCard };
-import { cardList, cardTemplate } from "./index";
-import { closeEscapeModal } from "./modal";
+export { initialCards, createCard, getCard, deleteCard, likeCard };
+import { cardList, cardTemplate, openCard } from "./index";
 
 const initialCards = [
   {
@@ -29,7 +28,8 @@ const initialCards = [
   },
 ];
 
-function getCard(item, deleteCard, likeCard, openCard) {                   //получение карточки с данными
+// Функция, которя возвращает карточку с данными
+function getCard(item, deleteCard, likeCard, openCard) {
   const cardElement = cardTemplate.cloneNode(true);
   const cardImage = cardElement.querySelector('.card__image');
   const cardTitle = cardElement.querySelector('.card__title');
@@ -44,30 +44,19 @@ function getCard(item, deleteCard, likeCard, openCard) {                   //п�
   return cardElement;
 };
 
-function createCard(item) {                                                 //создание карточки
+// Функция создания карточки
+function createCard(item) {
   const cardElement = getCard(item, deleteCard, likeCard, openCard);
   cardList.append(cardElement);
 };
 
-function deleteCard(evt) {                                                  //удаление карточки
+// Функция удаления карточки
+function deleteCard(evt) {
   const deleteItem = evt.target.closest('.places__item');
   deleteItem.remove();
 };
 
-function likeCard(evt) {                                                     //лайк карточек
+// Функция лайка карточки
+function likeCard(evt) {
   evt.target.classList.toggle('card__like-button_is-active');
-}
-
-function openCard(evt) {                                                      //открытие карточек
-  const photoPopup = document.querySelector('.popup_type_image');
-  const card = photoPopup.querySelector('.popup__image');
-  const caption = photoPopup.querySelector('.popup__caption');
-  photoPopup.classList.add('popup_is-animated');
-  setTimeout(() => {
-    photoPopup.classList.add('popup_is-opened');
-  });
-  card.setAttribute('src', evt.target.src);
-  card.setAttribute('alt', evt.target.alt);
-  caption.textContent = evt.target.alt;
-  window.addEventListener('keydown', closeEscapeModal(photoPopup));
 };
