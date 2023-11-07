@@ -1,4 +1,3 @@
-export { initialCards, createCard, getCard, deleteCard, likeCard };
 import { cardList, cardTemplate, openCard } from "./index";
 
 const initialCards = [
@@ -28,8 +27,8 @@ const initialCards = [
   },
 ];
 
-// Функция, которя возвращает карточку с данными
-function getCard(item, deleteCard, likeCard, openCard) {
+// Функция создания карточки
+function createCard(item, deleteCard, likeCard, openCard) {
   const cardElement = cardTemplate.cloneNode(true);
   const cardImage = cardElement.querySelector('.card__image');
   const cardTitle = cardElement.querySelector('.card__title');
@@ -44,9 +43,9 @@ function getCard(item, deleteCard, likeCard, openCard) {
   return cardElement;
 };
 
-// Функция создания карточки
-function createCard(item) {
-  const cardElement = getCard(item, deleteCard, likeCard, openCard);
+// Функция вставки/добавления карточки
+function addCard(item) {
+  const cardElement = createCard(item, deleteCard, likeCard, openCard);
   cardList.append(cardElement);
 };
 
@@ -60,3 +59,5 @@ function deleteCard(evt) {
 function likeCard(evt) {
   evt.target.classList.toggle('card__like-button_is-active');
 };
+
+export { initialCards, addCard, createCard, deleteCard, likeCard };
