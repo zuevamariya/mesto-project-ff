@@ -1,5 +1,6 @@
 import '../pages/index.css';
-import { initialCards, addCard, createCard, deleteCard, likeCard } from './cards';
+import { initialCards } from './cards';
+import { addCard, createCard, deleteCard, likeCard } from './card';
 import { showModal, closeModal } from './modal';
 
 // DOM-элементы для создания карточки
