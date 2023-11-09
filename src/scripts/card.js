@@ -1,7 +1,5 @@
-import { cardList, cardTemplate, openCard } from "./index";
-
 // Функция создания карточки
-function createCard(item, deleteCard, likeCard, openCard) {
+function createCard(item, cardTemplate, deleteCard, likeCard, openCard) {
   const cardElement = cardTemplate.cloneNode(true);
   const cardImage = cardElement.querySelector('.card__image');
   const cardTitle = cardElement.querySelector('.card__title');
@@ -17,8 +15,8 @@ function createCard(item, deleteCard, likeCard, openCard) {
 };
 
 // Функция вставки/добавления карточки
-function addCard(item) {
-  const cardElement = createCard(item, deleteCard, likeCard, openCard);
+function addCard(item, cardList, cardTemplate, openCard) {
+  const cardElement = createCard(item, cardTemplate, deleteCard, likeCard, openCard);
   cardList.append(cardElement);
 };
 

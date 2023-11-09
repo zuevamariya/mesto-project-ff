@@ -8,7 +8,9 @@ const cardTemplate = document.querySelector('#card-template').content;
 const cardList = document.querySelector('.places__list');
 
 // Перебор элементов массива для создания карточки и ее вывода на страницу
-initialCards.forEach(addCard);
+initialCards.forEach((card) => {
+  addCard(card, cardList, cardTemplate, openCard);
+});
 
 // Модальное окно редактирования профиля (DOM-элементы и вызовы)
 const editPopup = document.querySelector('.popup_type_edit');
@@ -79,7 +81,7 @@ function handleAddForm(evt) {
   const cardValue = cardInput.value;
   const linkValue = linkInput.value;
   const card = { name: cardValue, link: linkValue };
-  const newCard = createCard(card, deleteCard, likeCard, openCard);
+  const newCard = createCard(card, cardTemplate, deleteCard, likeCard, openCard);
   cardList.prepend(newCard);
   addForm.reset();
   closeModal(addPopup);
@@ -97,5 +99,3 @@ function openCard(evt) {
   card.setAttribute('alt', evt.target.alt);
   caption.textContent = evt.target.alt;
 };
-
-export { cardList, cardTemplate, openCard };
