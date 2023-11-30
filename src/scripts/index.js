@@ -21,7 +21,7 @@ const cardList = document.querySelector('.places__list');
 // Функция заполнения карточками страницы
 function fillCards(initialCards, profileId) {
   initialCards.forEach((card) => {
-    addCard(card, cardList, cardTemplate, deleteCard, likeCard, openCard, profileId);
+    addCard(card, cardList, cardTemplate, deleteCard, likeCard, openCard, openDeletePopup, closeDeletePopup, deletePopup, profileId);
   });
 };
 
@@ -58,6 +58,7 @@ function handleEditForm(evt) {
   const nameValue = nameInput.value;
   const jobValue = jobInput.value;
   editSaveButton.textContent = 'Сохранение...';
+  editSaveButton.disabled = true;
   editProfile(nameValue, jobValue)
     .then((res) => {
       namePlace.textContent = res.name;
@@ -69,6 +70,7 @@ function handleEditForm(evt) {
   setTimeout(()=> {
     closeModal(editPopup);
     editSaveButton.textContent = 'Сохранить';
+    editSaveButton.disabled = false;
   }, 1000);
 };
 
@@ -97,9 +99,10 @@ function handleAddForm(evt) {
   const cardValue = cardInput.value;
   const linkValue = linkInput.value;
   addSaveButton.textContent = 'Сохранение...';
+  addSaveButton.disabled = true;
   addNewCard(cardValue, linkValue)
     .then((card) => {
-    const newCard = createCard(card, cardTemplate, deleteCard, likeCard, openCard, profileId);
+    const newCard = createCard(card, cardTemplate, deleteCard, likeCard, openCard, openDeletePopup, closeDeletePopup, deletePopup, profileId);
     cardList.prepend(newCard);
     })
     .catch((error) => {
@@ -110,6 +113,7 @@ function handleAddForm(evt) {
     closeModal(addPopup);
     clearValidation(addForm, validationConfig);
     addSaveButton.textContent = 'Сохранить';
+    addSaveButton.disabled = false;
   }, 1000);
 };
 
@@ -156,6 +160,7 @@ function handleProfileForm(evt) {
   const linkValue = profileLinkInput.value;
   profileImage.style.backgroundImage = linkValue;
   profileSaveButton.textContent = 'Сохранение...';
+  profileSaveButton.disabled = true;
   changeAvatar(linkValue)
     .then((res) => {
       profileImage.style.backgroundImage = `url('${res.avatar}')`;
@@ -168,10 +173,22 @@ function handleProfileForm(evt) {
     closeModal(profilePopup);
     clearValidation(profileForm, validationConfig);
     profileSaveButton.textContent = 'Сохранить';
+    profileSaveButton.disabled = false;
   }, 1000);
 };
 
 profileForm.addEventListener('submit', handleProfileForm);
+
+// Модальное окно удаление карточки с сайта (DOM-элементы и переменные - открытие/закрытие попапа)
+const deletePopup = document.querySelector('.popup_type_delete');
+
+const openDeletePopup = () => {
+  showModal(deletePopup);
+};
+
+const closeDeletePopup = () => {
+  closeModal(deletePopup);
+};
 
 // Вызов функции, отвечающей за включение валидации всех форм
 enableValidation(validationConfig);

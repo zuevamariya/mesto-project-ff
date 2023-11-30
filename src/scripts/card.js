@@ -1,8 +1,7 @@
-import { showModal, closeModal } from './modal';
 import { deleteMyCard, likeThisCard, dislikeThisCard } from './api';
 
 // Функция создания карточки
-function createCard(item, cardTemplate, deleteCard, likeCard, openCard, profileId) {
+function createCard(item, cardTemplate, deleteCard, likeCard, openCard, openDeletePopup, closeDeletePopup, deletePopup, profileId) {
   // DOM-элементы
   const cardElement = cardTemplate.cloneNode(true);
   const cardImage = cardElement.querySelector('.card__image');
@@ -10,7 +9,6 @@ function createCard(item, cardTemplate, deleteCard, likeCard, openCard, profileI
   const deleteButton = cardElement.querySelector('.card__delete-button');
   const likeButton = cardElement.querySelector('.card__like-button');
   const likeLabel = cardElement.querySelector('.card__like-label');
-  const deletePopup = document.querySelector('.popup_type_delete');
   const closeDeleteButton = deletePopup.querySelector('.popup__close');
   const consentDeleteButton = deletePopup.querySelector('.popup__button');
 
@@ -34,24 +32,35 @@ function createCard(item, cardTemplate, deleteCard, likeCard, openCard, profileI
     deleteButton.remove();
   };
   
+  // Переменная, хранящая функции удаления карточки со страницы
+  const set = () => {
+    deleteMyCard(cardId)
+      .then(() => {
+        closeDeletePopup();
+        deleteCard(deleteButton);
+        consentDeleteButton.removeEventListener('click', set);
+      })
+      .catch((error) => {
+        console.log('Ошибка удаления карточки со страницы:', error);
+      })
+  };
+
   // Удаление карточки
   deleteButton.addEventListener('click', () => {
-    showModal(deletePopup);
-    consentDeleteButton.addEventListener('click', () => {
-      deleteMyCard(cardId);
-      closeModal(deletePopup);
-      deleteCard(deleteButton);
-    });
-    closeDeleteButton.addEventListener('click', () => {
-      closeModal(deletePopup);
-    });
+    openDeletePopup();
+    consentDeleteButton.addEventListener('click', set);
   });
+  closeDeleteButton.addEventListener('click', () => {
+    closeDeletePopup();
+    consentDeleteButton.removeEventListener('click', set);
+  });
+
   return cardElement;
 };
 
 // Функция вставки/добавления карточки
-function addCard(item, cardList, cardTemplate, deleteCard, likeCard, openCard, profileId) {
-  const cardElement = createCard(item, cardTemplate, deleteCard, likeCard, openCard, profileId);
+function addCard(item, cardList, cardTemplate, deleteCard, likeCard, openCard, openDeletePopup, closeDeletePopup, deletePopup, profileId) {
+  const cardElement = createCard(item, cardTemplate, deleteCard, likeCard, openCard, openDeletePopup, closeDeletePopup, deletePopup, profileId);
   cardList.append(cardElement);
 };
 
@@ -70,7 +79,7 @@ function likeCard(likeButton, likeLabel, cardId) {
         likeLabel.textContent = obj.likes.length;
       })
       .catch((error) => {
-        console.log(error);
+        console.log('Ошибка при постановке лайка', error);
       });
   } else {
     dislikeThisCard(cardId)
@@ -78,7 +87,7 @@ function likeCard(likeButton, likeLabel, cardId) {
         likeLabel.textContent = obj.likes.length;
       })
       .catch((error) => {
-        console.log(error);
+        console.log('Ошибка при удалении лайка', error);
       });
   };
 };
