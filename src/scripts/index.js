@@ -1,5 +1,5 @@
 import '../pages/index.css';
-import { addCard, createCard, likeCard } from './card';
+import { createCard, likeCard } from './card';
 import { showModal, closeModal } from './modal';
 import { enableValidation, clearValidation } from './validation';
 import { getUserInfo, getCards, deleteMyCard, editProfile, addNewCard, changeAvatar } from './api';
@@ -18,10 +18,16 @@ const validationConfig = {
 const cardTemplate = document.querySelector('#card-template').content;
 const cardList = document.querySelector('.places__list');
 
+// Функция вставки/добавления карточки
+function addCard(item, cardList, cardTemplate, createCard, likeCard, openCard, deleteThisCard, profileId) {
+  const cardElement = createCard(item, cardTemplate, likeCard, openCard, deleteThisCard, profileId);
+  cardList.append(cardElement);
+};
+
 // Функция заполнения карточками страницы
 function fillCards(initialCards, profileId) {
   initialCards.forEach((card) => {
-    addCard(card, cardList, cardTemplate, likeCard, openCard, openDeletePopup, deleteThisCard, profileId);
+    addCard(card, cardList, cardTemplate,createCard, likeCard, openCard, deleteThisCard, profileId);
   });
 };
 
@@ -105,7 +111,7 @@ function handleAddForm(evt) {
   addNewCard(cardValue, linkValue)
     .then((card) => {
       console.log('Добавление карточки прошло успешно:', card.link);
-      const newCard = createCard(card, cardTemplate, likeCard, openCard, openDeletePopup, deleteThisCard, profileId);
+      const newCard = createCard(card, cardTemplate, likeCard, openCard, deleteThisCard, profileId);
       cardList.prepend(newCard);
       closeModal(addPopup);
     })
@@ -182,40 +188,18 @@ function handleProfileForm(evt) {
 
 profileForm.addEventListener('submit', handleProfileForm);
 
-// Модальное окно удаление карточки с сайта (DOM-элементы и переменные - открытие/закрытие попапа)
-const deletePopup = document.querySelector('.popup_type_delete');
-const closeDeleteButton = deletePopup.querySelector('.popup__close');
-const deleteForm = document.querySelector('form[name="delete-card"');
-
-const openDeletePopup = () => {
-  showModal(deletePopup);
-};
-
-const closeDeletePopup = () => {
-  closeModal(deletePopup);
-};
-
-closeDeleteButton.addEventListener('click', closeDeletePopup);
-
+// Функция удаления карточки
 function deleteThisCard(cardId, deleteButton) {
   deleteMyCard(cardId)
     .then((res) => {
       console.log('Удаление карточки произошло успешно:', res);
       const deleteItem = deleteButton.closest('.places__item');
       deleteItem.remove();
-      closeDeletePopup();
     })
     .catch((error) => {
       console.log('Ошибка при удалении карточки:', error);
     });
 };
-
-function handleDeleteForm(evt) {
-  evt.preventDefault();
-  deleteThisCard(cardId);
-};
-
-deleteForm.addEventListener('submit', handleDeleteForm);
 
 // Вызов функции, отвечающей за включение валидации всех форм
 enableValidation(validationConfig);

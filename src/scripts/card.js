@@ -1,7 +1,7 @@
 import { likeThisCard, dislikeThisCard } from './api';
 
 // Функция создания карточки
-function createCard(item, cardTemplate, likeCard, openCard, openDeletePopup, deleteThisCard, profileId) {
+function createCard(item, cardTemplate, likeCard, openCard, deleteThisCard, profileId) {
   // DOM-элементы
   const cardElement = cardTemplate.cloneNode(true);
   const cardImage = cardElement.querySelector('.card__image');
@@ -30,41 +30,37 @@ function createCard(item, cardTemplate, likeCard, openCard, openDeletePopup, del
     deleteButton.remove();
   };
   
-  // Удаление карточки
+  // Обработка клика удаления карточки
   deleteButton.addEventListener('click', () => {
-    openDeletePopup();
     deleteThisCard(cardId, deleteButton);
   });
 
   return cardElement;
 };
 
-// Функция вставки/добавления карточки
-function addCard(item, cardList, cardTemplate, likeCard, openCard, openDeletePopup, deleteThisCard, profileId) {
-  const cardElement = createCard(item, cardTemplate, likeCard, openCard, openDeletePopup, deleteThisCard, profileId);
-  cardList.append(cardElement);
-};
-
 // Функция лайка карточки
 function likeCard(likeButton, likeLabel, cardId) {
-  likeButton.classList.toggle('card__like-button_is-active');
   if (likeButton.classList.contains('card__like-button_is-active')) {
-    likeThisCard(cardId)
-      .then((obj) => {
-        likeLabel.textContent = obj.likes.length;
-      })
-      .catch((error) => {
-        console.log('Ошибка при постановке лайка', error);
-      });
-  } else {
     dislikeThisCard(cardId)
       .then((obj) => {
+        console.log('Лайк с карточки убран:', obj);
+        likeButton.classList.remove('card__like-button_is-active');
         likeLabel.textContent = obj.likes.length;
       })
       .catch((error) => {
         console.log('Ошибка при удалении лайка', error);
       });
+  } else {
+    likeThisCard(cardId)
+      .then((obj) => {
+        console.log('Лайк на карточку поставлен:', obj);
+        likeButton.classList.add('card__like-button_is-active');
+        likeLabel.textContent = obj.likes.length;
+      })
+      .catch((error) => {
+        console.log('Ошибка при постановке лайка', error);
+      });
   };
 };
 
-export { addCard, createCard, likeCard };
+export { createCard, likeCard };
