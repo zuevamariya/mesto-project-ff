@@ -5,45 +5,38 @@ const user = 'users/me';
 const card = 'cards';
 const likeCard = 'cards/likes/';
 const avatar = 'users/me/avatar';
-
+function getResponseData(res) {
+  if (!res.ok) {
+      return Promise.reject(`Ошибка: ${res.status}`); 
+  }
+  return res.json();
+}
 // Функция загрузки информации о пользователе с сервера
 function getUserInfo() {
-  const TargetUrl = baseUrl + user;
-  return fetch(TargetUrl, {
+  const targetUrl = baseUrl + user;
+  return fetch(targetUrl, {
   headers: {
     authorization: token
   }
 })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  .then((res) => getResponseData(res));
 };
 
 // Функция загрузки карточек с сервера
 function getCards() {
-  const TargetUrl = baseUrl + card;
-  return fetch(TargetUrl, {
+  const targetUrl = baseUrl + card;
+  return fetch(targetUrl, {
   headers: {
     authorization: token
   }
 })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  .then((res) => getResponseData(res));
 };
 
 // Функция редактирования данных профиля
 function editProfile(profileName, profileAbout) {
-  const TargetUrl = baseUrl + user;
-  return fetch(TargetUrl, {
+  const targetUrl = baseUrl + user;
+  return fetch(targetUrl, {
     method: 'PATCH',
     headers: {
       authorization: token,
@@ -54,19 +47,13 @@ function editProfile(profileName, profileAbout) {
       about: profileAbout
     })
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  .then((res) => getResponseData(res));
 };
 
 // Функция добавления новой карточки на страницу
 function addNewCard(nameCard, linkCard) {
-  const TargetUrl = baseUrl + card;
-  return fetch(TargetUrl, {
+  const targetUrl = baseUrl + card;
+  return fetch(targetUrl, {
     method: 'POST',
     headers: {
       authorization: token,
@@ -77,76 +64,52 @@ function addNewCard(nameCard, linkCard) {
       link: linkCard
     })
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  .then((res) => getResponseData(res));
 };
 
 // Функция удаления карточки со страницы
 function deleteMyCard(itemId) {
-  const TargetUrl = baseUrl + card + '/' + itemId;
-  return fetch(TargetUrl, {
+  const targetUrl = baseUrl + card + '/' + itemId;
+  return fetch(targetUrl, {
     method: 'DELETE',
     headers: {
       authorization: token,
       'Content-Type': 'application/json'
     },
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  .then((res) => getResponseData(res));
 };
 
 // Функция лайка карточки
 function likeThisCard(itemId) {
-  const TargetUrl = baseUrl + likeCard + itemId;
-  return fetch(TargetUrl, {
+  const targetUrl = baseUrl + likeCard + itemId;
+  return fetch(targetUrl, {
     method: 'PUT',
     headers: {
       authorization: token,
       'Content-Type': 'application/json'
     },
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  .then((res) => getResponseData(res));
 };
 
 // Функция дизлайка карточки
 function dislikeThisCard(itemId) {
-  const TargetUrl = baseUrl + likeCard + itemId;
-  return fetch(TargetUrl, {
+  const targetUrl = baseUrl + likeCard + itemId;
+  return fetch(targetUrl, {
     method: 'DELETE',
     headers: {
       authorization: token,
       'Content-Type': 'application/json'
     },
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  .then((res) => getResponseData(res));
 };
 
 // Функция смены аватара
 function changeAvatar(avatarLink) {
-  const TargetUrl = baseUrl + avatar;
-  return fetch(TargetUrl, {
+  const targetUrl = baseUrl + avatar;
+  return fetch(targetUrl, {
     method: 'PATCH',
     headers: {
       authorization: token,
@@ -156,13 +119,7 @@ function changeAvatar(avatarLink) {
       avatar: avatarLink
     })
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  .then((res) => getResponseData(res));
 };
 
 export { getUserInfo, getCards, deleteMyCard, editProfile, addNewCard, likeThisCard, dislikeThisCard, changeAvatar };

@@ -1,7 +1,7 @@
-import { deleteMyCard, likeThisCard, dislikeThisCard } from './api';
+import { likeThisCard, dislikeThisCard } from './api';
 
 // Функция создания карточки
-function createCard(item, cardTemplate, deleteCard, likeCard, openCard, openDeletePopup, closeDeletePopup, deletePopup, profileId) {
+function createCard(item, cardTemplate, likeCard, openCard, openDeletePopup, deleteThisCard, profileId) {
   // DOM-элементы
   const cardElement = cardTemplate.cloneNode(true);
   const cardImage = cardElement.querySelector('.card__image');
@@ -9,9 +9,7 @@ function createCard(item, cardTemplate, deleteCard, likeCard, openCard, openDele
   const deleteButton = cardElement.querySelector('.card__delete-button');
   const likeButton = cardElement.querySelector('.card__like-button');
   const likeLabel = cardElement.querySelector('.card__like-label');
-  const closeDeleteButton = deletePopup.querySelector('.popup__close');
-  const consentDeleteButton = deletePopup.querySelector('.popup__button');
-
+  
   // Присвоение значений
   const cardId = item._id;
   cardImage.src = item.link;
@@ -32,42 +30,19 @@ function createCard(item, cardTemplate, deleteCard, likeCard, openCard, openDele
     deleteButton.remove();
   };
   
-  // Переменная, хранящая функции удаления карточки со страницы
-  const set = () => {
-    deleteMyCard(cardId)
-      .then(() => {
-        closeDeletePopup();
-        deleteCard(deleteButton);
-        consentDeleteButton.removeEventListener('click', set);
-      })
-      .catch((error) => {
-        console.log('Ошибка удаления карточки со страницы:', error);
-      })
-  };
-
   // Удаление карточки
   deleteButton.addEventListener('click', () => {
     openDeletePopup();
-    consentDeleteButton.addEventListener('click', set);
-  });
-  closeDeleteButton.addEventListener('click', () => {
-    closeDeletePopup();
-    consentDeleteButton.removeEventListener('click', set);
+    deleteThisCard(cardId, deleteButton);
   });
 
   return cardElement;
 };
 
 // Функция вставки/добавления карточки
-function addCard(item, cardList, cardTemplate, deleteCard, likeCard, openCard, openDeletePopup, closeDeletePopup, deletePopup, profileId) {
-  const cardElement = createCard(item, cardTemplate, deleteCard, likeCard, openCard, openDeletePopup, closeDeletePopup, deletePopup, profileId);
+function addCard(item, cardList, cardTemplate, likeCard, openCard, openDeletePopup, deleteThisCard, profileId) {
+  const cardElement = createCard(item, cardTemplate, likeCard, openCard, openDeletePopup, deleteThisCard, profileId);
   cardList.append(cardElement);
-};
-
-// Функция удаления карточки
-function deleteCard(deleteButton) {
-  const deleteItem = deleteButton.closest('.places__item');
-  deleteItem.remove();
 };
 
 // Функция лайка карточки
@@ -92,4 +67,4 @@ function likeCard(likeButton, likeLabel, cardId) {
   };
 };
 
-export { addCard, createCard, deleteCard, likeCard };
+export { addCard, createCard, likeCard };

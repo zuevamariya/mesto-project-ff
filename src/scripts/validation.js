@@ -70,13 +70,13 @@ function toggleButtonState(inputList, buttonElement, { inactiveButtonClass }) {
 };
 
 // Функция очистки ошибок валидации формы и управление активностью кнопки
-function clearValidation(profileForm, validationConfig) {
-  const inputList = Array.from(profileForm.querySelectorAll(validationConfig.inputSelector));
-  const buttonElement = profileForm.querySelector(validationConfig.submitButtonSelector);
+function clearValidation(form, validationConfig) {
+  const inputList = Array.from(form.querySelectorAll(validationConfig.inputSelector));
+  const buttonElement = form.querySelector(validationConfig.submitButtonSelector);
   toggleButtonState(inputList, buttonElement, validationConfig);
 
   inputList.forEach((inputElement) => {
-    hideInputError(profileForm, inputElement, validationConfig);
+    hideInputError(form, inputElement, validationConfig);
     inputElement.setCustomValidity("");
   });
   toggleButtonState(inputList, buttonElement, validationConfig);
