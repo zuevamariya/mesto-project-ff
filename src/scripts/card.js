@@ -1,7 +1,8 @@
 import { likeThisCard, dislikeThisCard } from './api';
 
+let currentCardId, currentDeleteButton;
 // Функция создания карточки
-function createCard(item, cardTemplate, likeCard, openCard, deleteThisCard, profileId) {
+function createCard(item, cardTemplate, likeCard, openCard, openDeletePopup, profileId) {
   // DOM-элементы
   const cardElement = cardTemplate.cloneNode(true);
   const cardImage = cardElement.querySelector('.card__image');
@@ -30,13 +31,19 @@ function createCard(item, cardTemplate, likeCard, openCard, deleteThisCard, prof
     deleteButton.remove();
   };
   
-  // Обработка клика удаления карточки
+  // Удаление карточки
   deleteButton.addEventListener('click', () => {
-    deleteThisCard(cardId, deleteButton);
+    currentCardId = cardId;
+    currentDeleteButton = deleteButton;
+    openDeletePopup();
   });
 
   return cardElement;
 };
+
+function getCardForDeletion() {
+  return { cardId: currentCardId, deleteButton: currentDeleteButton };
+}
 
 // Функция лайка карточки
 function likeCard(likeButton, likeLabel, cardId) {
@@ -63,4 +70,4 @@ function likeCard(likeButton, likeLabel, cardId) {
   };
 };
 
-export { createCard, likeCard };
+export { createCard, likeCard, getCardForDeletion };
