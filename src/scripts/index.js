@@ -233,8 +233,7 @@ let profileId;
 // Вывод объекта с данными профиля и массива с карточками
 Promise.all([getUserInfo(), getCards()])
   .then((array) => {
-    const userList = array[0];
-    const initialCards = array[1];
+    const [userList, initialCards] = array;
     console.log('Оба запроса на сервер выполнены успешно =>',
     '\n', 'Данные профиля:', userList, '\n', 'Массив с карточками:', initialCards);
     namePlace.textContent = userList.name;
