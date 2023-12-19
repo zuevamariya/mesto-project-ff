@@ -4,6 +4,8 @@ import { showModal, closeModal } from './modal';
 import { enableValidation, clearValidation } from './validation';
 import { getUserInfo, getCards, deleteMyCard, editProfile, addNewCard, changeAvatar } from './api';
 
+let profileId = null;
+
 // Объект с настройками валидации
 const validationConfig = {
   formSelector: '.popup__form',
@@ -15,19 +17,18 @@ const validationConfig = {
 };
 
 // DOM-элементы для создания карточки
-const cardTemplate = document.querySelector('#card-template').content;
 const cardList = document.querySelector('.places__list');
 
 // Функция вставки/добавления карточки
-function addCard(item, cardList, cardTemplate, createCard, likeCard, openCard, openDeletePopup, profileId) {
-  const cardElement = createCard(item, cardTemplate, likeCard, openCard, openDeletePopup, profileId);
+function addCard(item, cardList, createCard, likeCard, openCard, openDeletePopup, profileId) {
+  const cardElement = createCard(item, likeCard, openCard, openDeletePopup, profileId);
   cardList.append(cardElement);
 };
 
 // Функция заполнения карточками страницы
 function fillCards(initialCards, profileId) {
   initialCards.forEach((card) => {
-    addCard(card, cardList, cardTemplate, createCard, likeCard, openCard, openDeletePopup, profileId);
+    addCard(card, cardList, createCard, likeCard, openCard, openDeletePopup, profileId);
   });
 };
 
@@ -111,7 +112,7 @@ function handleAddForm(evt) {
   addNewCard(cardValue, linkValue)
     .then((card) => {
       console.log('Добавление карточки прошло успешно:', card.link);
-      const newCard = createCard(card, cardTemplate, likeCard, openCard, openDeletePopup, profileId);
+      const newCard = createCard(card, likeCard, openCard, openDeletePopup, profileId);
       cardList.prepend(newCard);
       closeModal(addPopup);
     })
@@ -228,12 +229,9 @@ deleteForm.addEventListener('submit', handleDeleteForm);
 // Вызов функции, отвечающей за включение валидации всех форм
 enableValidation(validationConfig);
 
-let profileId;
-
 // Вывод объекта с данными профиля и массива с карточками
 Promise.all([getUserInfo(), getCards()])
-  .then((array) => {
-    const [userList, initialCards] = array;
+  .then(([userList, initialCards]) => {
     console.log('Оба запроса на сервер выполнены успешно =>',
     '\n', 'Данные профиля:', userList, '\n', 'Массив с карточками:', initialCards);
     namePlace.textContent = userList.name;

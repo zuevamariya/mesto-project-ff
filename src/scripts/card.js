@@ -1,10 +1,15 @@
 import { likeThisCard, dislikeThisCard } from './api';
 
+function getTemplate() {
+  return document.querySelector('#card-template').content.cloneNode(true);
+};
+
 let currentCardId, currentDeleteButton;
+
 // Функция создания карточки
-function createCard(item, cardTemplate, likeCard, openCard, openDeletePopup, profileId) {
+function createCard(item, likeCard, openCard, openDeletePopup, profileId) {
   // DOM-элементы
-  const cardElement = cardTemplate.cloneNode(true);
+  const cardElement = getTemplate();
   const cardImage = cardElement.querySelector('.card__image');
   const cardTitle = cardElement.querySelector('.card__title');
   const deleteButton = cardElement.querySelector('.card__delete-button');
@@ -55,7 +60,7 @@ function likeCard(likeButton, likeLabel, cardId) {
         likeLabel.textContent = obj.likes.length;
       })
       .catch((error) => {
-        console.log('Ошибка при удалении лайка', error);
+        console.log('Ошибка при удалении лайка:', error);
       });
   } else {
     likeThisCard(cardId)
@@ -65,7 +70,7 @@ function likeCard(likeButton, likeLabel, cardId) {
         likeLabel.textContent = obj.likes.length;
       })
       .catch((error) => {
-        console.log('Ошибка при постановке лайка', error);
+        console.log('Ошибка при постановке лайка:', error);
       });
   };
 };
